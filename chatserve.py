@@ -9,6 +9,18 @@ import sys
 MAX_LENGTH = 500
 
 
+def handShake(socket, handle):
+    """Perform handshake with the client and exchange handles.
+    Args:
+        socket: socket object
+        handle: server's handle
+    Returns:
+        Client's handle (in bytes)
+    """
+    clientHandle = socket.recv(1024)
+    return clientHandle
+
+
 def main():
     # Validate correct usage
     if len(sys.argv) != 2:
@@ -23,15 +35,12 @@ def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     s.listen(1)
-    '''
-    Return value of accept() is a pair:
-    conn is a new socket object usable to send and recieve data on connection.
-    addr is the address bound to the socket on the other end of the connection 
-    '''
 
     while 1:
+        # returns conn (socket object) and addr (address bound to socket on other end of conn)
         conn, addr = s.accept()
         print("Established connection with " + str(addr))
+        print(handShake(conn, addr).decode("utf-8"))
 
 
 if __name__ == "__main__":

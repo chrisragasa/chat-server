@@ -19,7 +19,7 @@ Program Description: chatclient.c is the client side of chat-serve program.
 
 /* Functions */
 void error(const char *msg, int exitVal);
-int setupSocket(int portNumber);
+int setupSocket(int portNumber, char *hostname);
 
 int main(int argc, char *argv[])
 {
@@ -42,9 +42,10 @@ int main(int argc, char *argv[])
     scanf("%s", clientHandle);
     printf("\n");
 
-    /* Create socket */
-    int sockfd = setupSocket(portnumber);
+    /* Create socket and establish connection between the two hosts */
+    int sockfd = setupSocket(portnumber, hostname);
 
+    /* Handshake */
     int s = send(sockfd, clientHandle, strlen(clientHandle), 0); // Send client handle
 
     return 0;
@@ -68,25 +69,25 @@ Description: Socket setup
 Input: portNo (int) - a valid port number that will be used for the socket
 Output: sockFD (int) - int that represents socket file descriptor
 **************************/
-int setupSocket(int portNumber)
+int setupSocket(int portNumber, char *hostname)
 {
-    int socketFD;                                        // Socket file descriptor
-    struct sockaddr_in serverAddress;                    // Server address struct
-    struct hostent *server = gethostbyname("localhost"); // Get host IP
+    int socketFD;                                     // Socket file descriptor
+    struct sockaddr_in serverAddress;                 // Server address struct
+    struct hostent *server = gethostbyname(hostname); // Get host IP
     if (server == NULL)
-        error("error: host was not found\n", 1); // error if host not found
+        error("error: host was not found", 1);
 
     /* Open the socket */
-    socketFD = socket(AF_INET, SOCK_STREAM, 0); // returns a socket descriptor that we can use in later system calls. returns -1 on error.
+    socketFD = socket(AF_INET, SOCK_STREAM, 0); // Returns a socket descriptor that we can use in later system calls. returns -1 on error.
     if (socketFD < 0)
     {
-        error("error: opening socket", 1); // check if the return value was -1 to signify an error
+        error("error: opening socket", 1);
     }
 
     /* Set up server address struct */
     memset((char *)&serverAddress, '\0', sizeof(serverAddress));                             // Clear out the address struct
     serverAddress.sin_family = AF_INET;                                                      // Create a network-capable socket
-    bcopy((char *)server->h_addr, (char *)&serverAddress.sin_addr.s_addr, server->h_length); // copy serv_addr ip into server->h_addr
+    bcopy((char *)server->h_addr, (char *)&serverAddress.sin_addr.s_addr, server->h_length); // Copy serv_addr ip into server->h_addr
     serverAddress.sin_port = htons(portNumber);                                              // Store the port number
 
     /* Connect to server */
