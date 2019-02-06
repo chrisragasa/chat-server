@@ -17,18 +17,34 @@ Software Requirements:
 
 ## Compile
 
-Insert compilation steps here
+In project directory, ensure proper permissions are set on `compileall`:
 
 ```bash
-$ compileall
+$ chmod +x compileall
+```
+
+To compile, run the following script in the project directory:
+
+```bash
+$ ./compileall
 ```
 
 ## Usage
 
-### insert usage instructions here
+### Starting the server
+
+```bash
+$ python3 chatserve.py [port number]
+```
+
+### Running the client
+
+```bash
+$ ./chatclient localhost [port number]
+```
 
 ## Resources
 
-http://docs.python.org/release/2.6.5/library/internet.html
-https://docs.python.org/3/library/socket.html
-https://beej.us/guide/bgnet/html/multi/index.html
+- http://docs.python.org/release/2.6.5/library/internet.html
+- https://docs.python.org/3/library/socket.html
+- https://beej.us/guide/bgnet/html/multi/index.html
