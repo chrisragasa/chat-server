@@ -28,14 +28,10 @@ def main():
     conn is a new socket object usable to send and recieve data on connection.
     addr is the address bound to the socket on the other end of the connection 
     '''
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
+
+    while 1:
+        conn, addr = s.accept()
+        print("Established connection with " + str(addr))
 
 
 if __name__ == "__main__":

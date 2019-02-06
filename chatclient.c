@@ -45,6 +45,8 @@ int main(int argc, char *argv[])
     /* Create socket */
     int sockfd = setupSocket(portnumber);
 
+    int s = send(sockfd, clientHandle, strlen(clientHandle), 0); // Send client handle
+
     return 0;
 }
 
