@@ -14,6 +14,8 @@ Usage:
 2) To start the client, run the following command in the project directory:
     ./chatclient localhost [port number]
 
+Notes:
+Testing was performed on OSU flip servers. 
 
 Resources:
 http://docs.python.org/release/2.6.5/library/internet.html
