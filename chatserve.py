@@ -23,6 +23,29 @@ def handShake(socket, address, handle):
     return clientHandle
 
 
+def initChat(clientHandle, serverHandle, socket):
+    """Establish connection with client and create a chat session
+    Args:
+        clientHandle: client's handle (string)
+        serverHandle: server's handle (string)
+        socket: socket object
+    Returns:
+        N/A
+    """
+    while(1):
+        message = socket.recv(MAX_LENGTH).decode("utf-8")
+        print(clientHandle + "> " + message)
+        buffer = ''
+        while len(buffer) == 0 or len(buffer) > MAX_LENGTH:
+            buffer = input(serverHandle+"> ")
+        if buffer == "\quit":
+            print("Dropping connection with client at " +
+                  str(socket.getsockname()) + "...")
+            break
+        else:
+            socket.send(bytes(buffer, 'UTF-8'))
+
+
 def main():
     # Validate correct usage
     if len(sys.argv) != 2:
@@ -42,9 +65,11 @@ def main():
         # accept() returns conn (socket object) and addr (address bound to socket on other end of conn)
         conn, addr = s.accept()
         print("Established connection with " + str(addr))
+        # Store client handle as a string
         clientHandle = handShake(conn, addr, "HostA").decode(
-            "utf-8")  # Store the client handle as a string
-        print("client handle: " + clientHandle)
+            "utf-8")
+        initChat(clientHandle, "HostA", conn)
+        conn.close()
 
 
 if __name__ == "__main__":

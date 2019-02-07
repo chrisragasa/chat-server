@@ -126,6 +126,8 @@ void initChat(char *clientHandle, char *serverHandle, int sockfd)
     {
         printf("%s> ", clientHandle);
 
+        /* Send message */
+        memset(msgSend, '\0', MESSAGE_LENGTH);
         fgets(msgSend, MESSAGE_LENGTH, stdin);
         msgSend[strcspn(msgSend, "\n")] = 0;
 
@@ -135,7 +137,28 @@ void initChat(char *clientHandle, char *serverHandle, int sockfd)
         }
         else
         {
-            printf("Here is the message: %s\n", msgSend);
+            bytesSent = send(sockfd, msgSend, MESSAGE_LENGTH, 0);
+            if (bytesSent == -1)
+            {
+                error("error: message could not be sent from client to server", 1);
+            }
+        }
+
+        /* Receive message */
+        memset(msgRecv, '\0', MESSAGE_LENGTH);
+        bytesRecv = recv(sockfd, msgRecv, MESSAGE_LENGTH, 0);
+        if (bytesRecv < 0)
+        {
+            error("error: message could not be sent from client to server", 1);
+        }
+        else if (bytesRecv > 0)
+        {
+            printf("%s> %s\n", serverHandle, msgRecv);
+        }
+        else
+        {
+            printf("The server has dropped the connection...\n");
+            break;
         }
     }
 }
