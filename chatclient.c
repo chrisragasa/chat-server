@@ -14,13 +14,14 @@ Program Description: chatclient.c is the client side of chat-serve program.
 #include <netdb.h>
 #include <time.h>
 
-#define HANDLE_LENGTH 12
-#define MESSAGE_LENGTH 502
+#define HANDLE_LENGTH 1024
+#define MESSAGE_LENGTH 1024
 
 /* Functions */
 void error(const char *msg, int exitVal);
 int setupSocket(int portNumber, char *hostname);
 void initChat(char *clientHandle, char *serverHandle, int sockfd);
+int isValidInput(char *inputString, int lengthLimit);
 
 int main(int argc, char *argv[])
 {
@@ -42,6 +43,10 @@ int main(int argc, char *argv[])
     printf("Enter client handle (length 10 or less): ");
     fgets(clientHandle, HANDLE_LENGTH, stdin);
     clientHandle[strcspn(clientHandle, "\n")] = 0; // Strip newline character
+    if (!isValidInput(clientHandle, 10))
+    {
+        error("error: client handle exceeds 10 characters", 1);
+    }
 
     /* Create socket and establish connection between the two hosts */
     int sockfd = setupSocket(portnumber, hostname);
@@ -130,6 +135,13 @@ void initChat(char *clientHandle, char *serverHandle, int sockfd)
         memset(msgSend, '\0', MESSAGE_LENGTH);
         fgets(msgSend, MESSAGE_LENGTH, stdin);
         msgSend[strcspn(msgSend, "\n")] = 0;
+        if (!isValidInput(msgSend, 500))
+        {
+            memset(msgSend, '\0', MESSAGE_LENGTH);
+            strcpy(msgSend, "\\quit");
+            bytesSent = send(sockfd, msgSend, MESSAGE_LENGTH, 0);
+            error("error: message exceeds 500 characters", 1);
+        }
 
         if (strcmp(msgSend, "\\quit") == 0)
         {
@@ -162,4 +174,21 @@ void initChat(char *clientHandle, char *serverHandle, int sockfd)
             break;
         }
     }
+}
+
+/**************************
+Function: isValidInput
+Description: Validate user input
+Input: 
+inputString (string) - input string to validate
+lengthLimit (int) - acceptable length of string to validate
+Output: 1 if valid, 0 if invalid
+**************************/
+int isValidInput(char *inputString, int lengthLimit)
+{
+    if (strlen(inputString) <= lengthLimit)
+    {
+        return 1;
+    }
+    return 0;
 }
