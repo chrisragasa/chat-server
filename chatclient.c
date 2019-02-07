@@ -20,6 +20,7 @@ Program Description: chatclient.c is the client side of chat-serve program.
 /* Functions */
 void error(const char *msg, int exitVal);
 int setupSocket(int portNumber, char *hostname);
+void initChat(char *clientHandle, char *serverHandle, int sockfd);
 
 int main(int argc, char *argv[])
 {
@@ -27,8 +28,8 @@ int main(int argc, char *argv[])
     int portnumber;
     char clientHandle[HANDLE_LENGTH];
     char serverHandle[HANDLE_LENGTH];
-    memset(clientHandle, '\0', HANDLE_LENGTH); // Initialize arrays with null terminators
-    memset(serverHandle, '\0', HANDLE_LENGTH); // Initialize arrays with null terminators
+    memset(clientHandle, '\0', HANDLE_LENGTH); // Initialize array with null terminators
+    memset(serverHandle, '\0', HANDLE_LENGTH); // Initialize array with null terminators
 
     /* Validate correct usage */
     if (argc != 3)
@@ -39,14 +40,17 @@ int main(int argc, char *argv[])
 
     /* Get client handle */
     printf("Enter client handle (length 10 or less): ");
-    scanf("%s", clientHandle);
-    printf("\n");
+    fgets(clientHandle, HANDLE_LENGTH, stdin);
+    clientHandle[strcspn(clientHandle, "\n")] = 0; // Strip newline character
 
     /* Create socket and establish connection between the two hosts */
     int sockfd = setupSocket(portnumber, hostname);
 
     /* Handshake */
     int s = send(sockfd, clientHandle, strlen(clientHandle), 0); // Send client handle
+    int r = recv(sockfd, serverHandle, HANDLE_LENGTH, 0);        // Receive the servers handle
+
+    initChat(clientHandle, serverHandle, sockfd);
 
     return 0;
 }
@@ -97,4 +101,41 @@ int setupSocket(int portNumber, char *hostname)
     }
 
     return socketFD;
+}
+
+/**************************
+Function: initChat
+Description: Establish connection with server and create a chat session
+Input: 
+clientHandle (string) - client's handle
+serverHandle (string) - server's handle
+sockfd (int) - socket file descriptor
+Output: N/A
+**************************/
+void initChat(char *clientHandle, char *serverHandle, int sockfd)
+{
+    char msgSend[MESSAGE_LENGTH];
+    char msgRecv[MESSAGE_LENGTH];
+    int bytesRecv;
+    int bytesSent;
+
+    memset(msgSend, '\0', MESSAGE_LENGTH); // Initialize array with null terminators
+    memset(msgRecv, '\0', MESSAGE_LENGTH); // Initialize array with null terminators
+
+    while (1)
+    {
+        printf("%s> ", clientHandle);
+
+        fgets(msgSend, MESSAGE_LENGTH, stdin);
+        msgSend[strcspn(msgSend, "\n")] = 0;
+
+        if (strcmp(msgSend, "\\quit") == 0)
+        {
+            break;
+        }
+        else
+        {
+            printf("Here is the message: %s\n", msgSend);
+        }
+    }
 }

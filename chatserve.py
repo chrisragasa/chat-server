@@ -9,15 +9,17 @@ import sys
 MAX_LENGTH = 500
 
 
-def handShake(socket, handle):
-    """Perform handshake with the client and exchange handles.
+def handShake(socket, address, handle):
+    """Perform handshake with the client: receive the client's handle and send the server's handle
     Args:
         socket: socket object
-        handle: server's handle
+        address: address bound to socket on the other end of connection
+        handle: server's handle (string)
     Returns:
         Client's handle (in bytes)
     """
     clientHandle = socket.recv(1024)
+    socket.send(bytes(handle, 'UTF-8'))  # Encode
     return clientHandle
 
 
@@ -37,10 +39,12 @@ def main():
     s.listen(1)
 
     while 1:
-        # returns conn (socket object) and addr (address bound to socket on other end of conn)
+        # accept() returns conn (socket object) and addr (address bound to socket on other end of conn)
         conn, addr = s.accept()
         print("Established connection with " + str(addr))
-        print(handShake(conn, addr).decode("utf-8"))
+        clientHandle = handShake(conn, addr, "HostA").decode(
+            "utf-8")  # Store the client handle as a string
+        print("client handle: " + clientHandle)
 
 
 if __name__ == "__main__":
