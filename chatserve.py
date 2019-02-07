@@ -6,7 +6,7 @@ Program Description: chatserve.py is the server side of chat-serve program.
 import socket
 import sys
 
-MAX_LENGTH = 500
+MAX_LENGTH = 1000
 
 
 def handShake(socket, address, handle):
@@ -24,7 +24,7 @@ def handShake(socket, address, handle):
 
 
 def initChat(clientHandle, serverHandle, socket, address):
-    """Establish connection with client and create a chat session
+    """Create a chat session with the client: send and recieve messages
     Args:
         clientHandle: client's handle (string)
         serverHandle: server's handle (string)
@@ -33,7 +33,10 @@ def initChat(clientHandle, serverHandle, socket, address):
         N/A
     """
     while(1):
-        message = socket.recv(MAX_LENGTH).decode("utf-8")
+        message = socket.recv(MAX_LENGTH).decode().strip(' \t\r\n\0')
+        if message == "\quit":
+            print("The connection was dropped by the client...")
+            break
         print(clientHandle + "> " + message)
         buffer = ''
         while len(buffer) == 0 or len(buffer) > MAX_LENGTH:

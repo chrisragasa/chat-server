@@ -14,8 +14,8 @@ Program Description: chatclient.c is the client side of chat-serve program.
 #include <netdb.h>
 #include <time.h>
 
-#define HANDLE_LENGTH 11
-#define MESSAGE_LENGTH 500
+#define HANDLE_LENGTH 12
+#define MESSAGE_LENGTH 502
 
 /* Functions */
 void error(const char *msg, int exitVal);
@@ -105,7 +105,7 @@ int setupSocket(int portNumber, char *hostname)
 
 /**************************
 Function: initChat
-Description: Establish connection with server and create a chat session
+Description: Create a chat session with server: send and receive messages
 Input: 
 clientHandle (string) - client's handle
 serverHandle (string) - server's handle
@@ -133,6 +133,7 @@ void initChat(char *clientHandle, char *serverHandle, int sockfd)
 
         if (strcmp(msgSend, "\\quit") == 0)
         {
+            bytesSent = send(sockfd, msgSend, MESSAGE_LENGTH, 0); // Signal server that connection needs to be dropped
             break;
         }
         else
