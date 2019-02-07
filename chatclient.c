@@ -130,11 +130,11 @@ void initChat(char *clientHandle, char *serverHandle, int sockfd)
     while (1)
     {
         printf("%s> ", clientHandle);
-
-        /* Send message */
         memset(msgSend, '\0', MESSAGE_LENGTH);
         fgets(msgSend, MESSAGE_LENGTH, stdin);
-        msgSend[strcspn(msgSend, "\n")] = 0;
+        msgSend[strcspn(msgSend, "\n")] = 0; // Strip newline character
+
+        /* Validate input and send message*/
         if (!isValidInput(msgSend, 500))
         {
             memset(msgSend, '\0', MESSAGE_LENGTH);
@@ -142,7 +142,6 @@ void initChat(char *clientHandle, char *serverHandle, int sockfd)
             bytesSent = send(sockfd, msgSend, MESSAGE_LENGTH, 0);
             error("error: message exceeds 500 characters", 1);
         }
-
         if (strcmp(msgSend, "\\quit") == 0)
         {
             bytesSent = send(sockfd, msgSend, MESSAGE_LENGTH, 0); // Signal server that connection needs to be dropped

@@ -40,7 +40,7 @@ $ python3 chatserve.py [port number]
 ### 2) Starting the client
 
 ```bash
-$ ./chatclient localhost [port number]
+$ ./chatclient [server hostname] [port number]
 ```
 
 ### 3) Using the program

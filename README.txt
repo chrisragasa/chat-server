@@ -1,5 +1,9 @@
 ====================================================================================
-chat-server
+Author: Christopher Ragasa
+Program Name: chat-server
+Program Description: A chat systemm that works for one pair of users (server and client).
+Course Name: CS 372
+Last Modified: Feb 7, 2019
 ====================================================================================
 This program is a simple chat system that works for one pair of users, i.e., create two programs: a chat server and a chat client.
 
@@ -45,7 +49,7 @@ $ python3 chatserve.py [port number]
 2) Starting the client
 
 ```bash
-$ ./chatclient localhost [port number]
+$ ./chatclient [server hostname] [port number]
 ```
 
 3) Using the program
