@@ -31,16 +31,66 @@ $ ./compileall
 
 ## Usage
 
-### Starting the server
+### 1) Starting the server
 
 ```bash
 $ python3 chatserve.py [port number]
 ```
 
-### Running the client
+### 2) Starting the client
 
 ```bash
 $ ./chatclient localhost [port number]
+```
+
+### 3) Using the program
+
+The client will prompt the user to enter a handle. The handle must be less than 10 characters long.
+Once the handle is established, the hosts are now peers and may alternate sending/receiving messages.
+
+#### Example Usage:
+
+Server (Host A)
+
+```bash
+$ python3 chatserve.py 39919
+```
+
+Client (Host B)
+
+```bash
+$ ./chatclient localhost 39919
+Enter client handle (length 10 or less): Chris
+Chris> test
+```
+
+Server (Host A)
+
+```bash
+$ python3 chatserve.py 39919
+Established connection with ('127.0.0.1', 51100)...
+Chris> test
+HostA> hello
+```
+
+Client (Host B)
+
+```bash
+$ ./chatclient localhost 39919
+Enter client handle (length 10 or less): Chris
+Chris> test
+HostA> hello
+Chris> \quit
+```
+
+Server (Host A)
+
+```bash
+$ python3 chatserve.py 39919
+Established connection with ('127.0.0.1', 51100)...
+Chris> test
+HostA> hello
+The client has dropped the connection...
 ```
 
 ## Resources
